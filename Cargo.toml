@@ -1,0 +1,8 @@
+[package]
+name = "pxexec-orchestrator"
+version = "0.1.0"
+authors = ["William Temple <William.Temple@colorado.edu>"]
+
+[dependencies]
+iron = "*"
+rustc-serialize = "*"
