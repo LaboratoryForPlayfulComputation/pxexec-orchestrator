@@ -5,4 +5,6 @@ authors = ["William Temple <William.Temple@colorado.edu>"]
 
 [dependencies]
 iron = "*"
-rustc-serialize = "*"
+serde = "*"
+serde_json = "*"
+unescape = "*"
