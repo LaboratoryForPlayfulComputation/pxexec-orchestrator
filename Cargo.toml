@@ -5,6 +5,7 @@ authors = ["William Temple <William.Temple@colorado.edu>"]
 
 [dependencies]
 iron = "*"
+router = "*"
 serde = "*"
 serde_json = "*"
 tempfile = "*"
