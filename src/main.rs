@@ -105,5 +105,5 @@ fn main() {
         move |req: &mut Request| validate_request(req, &state),
         "save",
     );
-    Iron::new(router).http("localhost:3074").unwrap();
+    Iron::new(router).http("0.0.0.0:3074").unwrap();
 }
