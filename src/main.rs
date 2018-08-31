@@ -1,5 +1,9 @@
+extern crate dotenv;
+
 extern crate iron;
+extern crate mount;
 extern crate router;
+extern crate staticfile;
 
 extern crate serde;
 extern crate serde_json;
@@ -10,11 +14,14 @@ mod tsc;
 
 use iron::prelude::*;
 use iron::status;
+use mount::Mount;
 use router::Router;
+use staticfile::Static;
 
 use iron::method::Method;
 
 use std::collections::HashMap;
+use std::env;
 use std::io::prelude::*;
 use std::process::Child;
 use std::sync::{Arc, Mutex};
@@ -96,7 +103,8 @@ fn validate_request(req: &mut Request, s: &PXExecState) -> IronResult<Response> 
 }
 
 fn main() {
-    println!("Starting server on port 3074.");
+    dotenv::dotenv().ok();
+    println!("Starting server... ");
     let state = PXExecState::new();
     let mut router = Router::new();
 
@@ -105,5 +113,22 @@ fn main() {
         move |req: &mut Request| validate_request(req, &state),
         "save",
     );
-    Iron::new(router).http("0.0.0.0:3074").unwrap();
+
+    let mut mount = Mount::new();
+
+    // rustfmt insists that this block should be laid out this way... I'm sorry
+    mount
+        .mount(
+            "/editor",
+            // If PXEXEC_OVERRIDE_EDITOR_PATH is set for debugging purposes, mount that, otherwise look in ./editor/
+            Static::new(
+                env::var("PXEXEC_OVERRIDE_EDITOR_PATH").unwrap_or(String::from("./editor/")),
+            ),
+        )
+        .mount("/api", router);
+
+    // If PXEXEC_HOST is set for debugging purposes, bind that, otherwise bind 0.0.0.0:80
+    Iron::new(mount)
+        .http(env::var("PXEXEC_HOST").unwrap_or(String::from("0.0.0.0")))
+        .unwrap();
 }

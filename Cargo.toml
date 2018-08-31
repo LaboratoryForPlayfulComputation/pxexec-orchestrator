@@ -4,8 +4,11 @@ version = "0.1.0"
 authors = ["William Temple <William.Temple@colorado.edu>"]
 
 [dependencies]
+dotenv = "*"
 iron = "*"
 router = "*"
+mount = "*"
+staticfile = "*"
 serde = "*"
 serde_json = "*"
 tempfile = "*"

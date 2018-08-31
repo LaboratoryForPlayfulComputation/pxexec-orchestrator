@@ -10,6 +10,7 @@ const _PXEXEC_PREFIX: &'static str = r#"
 
 import _pxexec from '/usr/local/share/pxexec/core-exec';
 import loops from '/usr/local/share/pxexec/loops';
+import grove from '/usr/local/share/pxexec/grove';
 
 _pxexec.init();
 
