@@ -16,10 +16,13 @@ _pxexec.init();
 
 // END PXT_EXEC PREFIX
 
+(async () => {
 "#;
 
 const _PXEXEC_SUFFIX: &'static str = r#"
 // BEGIN PXT_EXEC SUFFIX
+
+})();
 
 _pxexec.run();
 
