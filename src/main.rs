@@ -28,7 +28,7 @@ use std::sync::{Arc, Mutex};
 
 type RequestData = HashMap<String, String>;
 
-#[derive(Default)]
+#[derive(Default, Clone)]
 struct PXExecState {
     running_process: Arc<Mutex<Option<Child>>>,
 }
@@ -102,17 +102,36 @@ fn validate_request(req: &mut Request, s: &PXExecState) -> IronResult<Response> 
     }
 }
 
+fn kill(_req: &mut Request, s: &PXExecState) -> IronResult<Response> {
+    println!("Killing child process");
+    if let Some(mut child) = s.take_child() {
+        match child.kill() {
+            Ok(_) => Ok(Response::with(status::Ok)),
+            Err(e) => Ok(Response::with(status::InternalServerError)),
+        }
+    } else {
+        Ok(Response::with(status::Ok))
+    }
+}
+
 fn main() {
     dotenv::dotenv().ok();
-    println!("Starting server... ");
+    print!("Starting server... ");
     let state = PXExecState::new();
+    let state_kill = state.clone();
     let mut router = Router::new();
 
-    router.post(
-        "/save",
-        move |req: &mut Request| validate_request(req, &state),
-        "save",
-    );
+    router
+        .post(
+            "/save",
+            move |req: &mut Request| validate_request(req, &state),
+            "save",
+        )
+        .post(
+            "/kill",
+            move |req: &mut Request| kill(req, &state_kill),
+            "kill",
+        );
 
     let mut mount = Mount::new();
 
@@ -127,8 +146,10 @@ fn main() {
         )
         .mount("/api", router);
 
+    println!("Done!");
+
     // If PXEXEC_HOST is set for debugging purposes, bind that, otherwise bind 0.0.0.0:80
     Iron::new(mount)
-        .http(env::var("PXEXEC_HOST").unwrap_or(String::from("0.0.0.0")))
+        .http(env::var("PXEXEC_HOST").unwrap_or(String::from("0.0.0.0:80")))
         .unwrap();
 }
