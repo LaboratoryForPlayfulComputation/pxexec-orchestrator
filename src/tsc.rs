@@ -11,17 +11,21 @@ const _PXEXEC_PREFIX: &'static str = r#"
 import _pxexec from '/usr/local/share/pxexec/core-exec';
 import loops from '/usr/local/share/pxexec/loops';
 import grove from '/usr/local/share/pxexec/grove';
+import network from '/usr/local/share/pxexec/network';
 
 _pxexec.init();
 
 // END PXT_EXEC PREFIX
 
+(async () => {
 "#;
 
 const _PXEXEC_SUFFIX: &'static str = r#"
 // BEGIN PXT_EXEC SUFFIX
 
 _pxexec.run();
+
+})();
 
 // END PXT_EXEC SUFFIX
 
@@ -59,6 +63,8 @@ pub fn compile(path: &Path) -> Result<(), String> {
         .arg("ES5")
         .arg("--module")
         .arg("commonjs")
+        .arg("--lib")
+        .arg("ES2015")
         .arg("--moduleResolution")
         .arg("node")
         .arg(path)
