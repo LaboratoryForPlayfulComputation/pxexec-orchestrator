@@ -129,6 +129,6 @@ fn main() {
 
     // If PXEXEC_HOST is set for debugging purposes, bind that, otherwise bind 0.0.0.0:80
     Iron::new(mount)
-        .http(env::var("PXEXEC_HOST").unwrap_or(String::from("0.0.0.0")))
+        .http(env::var("PXEXEC_HOST").unwrap_or(String::from("0.0.0.0:80")))
         .unwrap();
 }
