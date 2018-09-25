@@ -6,6 +6,7 @@ use std::path::{Path, PathBuf};
 use std::process::{Child, Command};
 
 const _PXEXEC_PREFIX: &'static str = r#"
+/// <reference path="/usr/local/share/pxexec/node.min.d.ts" />
 // BEGIN PXT_EXEC PREFIX
 
 import _pxexec from '/usr/local/share/pxexec/core-exec';
@@ -61,6 +62,8 @@ pub fn compile(path: &Path) -> Result<(), String> {
     let compiler = Command::new("tsc")
         .arg("--target")
         .arg("ES5")
+        .arg("--lib")
+        .arg("ES2015")
         .arg("--module")
         .arg("commonjs")
         .arg("--lib")
@@ -71,7 +74,14 @@ pub fn compile(path: &Path) -> Result<(), String> {
         .output()
         .expect("failed to execute tsc");
     println!("{}", String::from_utf8(compiler.stdout).unwrap());
-    Ok(())
+    if compiler.status.success() {
+        Ok(())
+    } else {
+        Err(format!(
+            "TypeScript compiler exited with: {:?}",
+            compiler.status.code()
+        ))
+    }
 }
 
 pub fn execute(path: &Path, prev: Option<Child>) -> Child {
