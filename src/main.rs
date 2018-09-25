@@ -107,7 +107,7 @@ fn kill(_req: &mut Request, s: &PXExecState) -> IronResult<Response> {
     if let Some(mut child) = s.take_child() {
         match child.kill() {
             Ok(_) => Ok(Response::with(status::Ok)),
-            Err(e) => Ok(Response::with(status::InternalServerError)),
+            Err(_) => Ok(Response::with(status::InternalServerError)),
         }
     } else {
         Ok(Response::with(status::Ok))
@@ -116,7 +116,7 @@ fn kill(_req: &mut Request, s: &PXExecState) -> IronResult<Response> {
 
 fn main() {
     dotenv::dotenv().ok();
-    print!("Starting server... ");
+    println!("Starting server... ");
     let state = PXExecState::new();
     let state_kill = state.clone();
     let mut router = Router::new();
