@@ -31,6 +31,9 @@ function injectFile(dependencies: string[], text: string): string {
 // Initialize modules
 ` + dependencies.map(initializeLine).join('\n') + `
 
+// This is a hack until wrtc can fix its module
+_core.hacks.wrtc = require('${_PREFIX}/../../../dss/client/node_modules/wrtc');
+
 _core.main(() => {
     // Original program text
 ` + text + `
