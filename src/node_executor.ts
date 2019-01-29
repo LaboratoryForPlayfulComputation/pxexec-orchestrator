@@ -36,6 +36,7 @@ class NodeChild {
     constructor(node: string, dir: string) {
         this.dir = dir;
 
+        // TODO: Let's use Linux Namespaces to sandbox the child process
         this.proc = spawn(
             node,
             [path.join(this.dir, "main.js")]
