@@ -1,18 +1,13 @@
 import * as bodyParser from "body-parser";
-import * as cookieParser from "cookie-parser";
 import * as express from "express";
 import * as logger from "morgan";
 import * as path from "path";
 import errorHandler = require("errorhandler");
-import methodOverride = require("method-override");
-import { isNamedExports, isNewExpression } from "typescript";
 
 import { compileAll } from "./compiler";
 import { PXTJson } from "./pxt";
 
 import * as nx from "./node_executor";
-
-import { RequestHandler } from "express-serve-static-core";
 
 const _PXT_JSON = "pxt.json";
 
@@ -44,9 +39,11 @@ export class Server {
             let tsFiles = Object.keys(jsonBody)
                 .filter((s) => s.endsWith(".ts") && jsonBody.hasOwnProperty(s));
 
-            let inputs: Map<string, string> = new Map();
+            console.log(tsFiles);
+
+            let inputs: {[k: string]: string} = {};
             tsFiles.forEach((f) => {
-                inputs.set(f, jsonBody[f]);
+                inputs[f] = jsonBody[f];
             });
 
             const compiled = compileAll(pxtInfo, inputs);
