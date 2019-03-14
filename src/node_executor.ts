@@ -1,16 +1,19 @@
 import * as fs from "fs";
-import * as os from "os";
 import * as path from "path";
 
 import * as tmp from "tmp";
+
+import * as sentry from '@sentry/node';
 
 import { ChildProcess, spawn } from "child_process";
 
 import { TranspileOutput } from "typescript";
 
-const _KILL_SIGNAL = 'SIGKILL';
+const _KILL_SIGNAL = 'SIGTERM';
 
 let _handler: NodeHandler | undefined = undefined;
+
+class UnexpectedClientTermination extends Error {}
 
 // Why in all hell do I have to implement this method
 // I tried to write this async but I'm not smart enough
@@ -34,6 +37,7 @@ class NodeChild {
     private dir: string;
 
     constructor(node: string, dir: string) {
+        const _child = this;
         this.dir = dir;
 
         // TODO: Let's use Linux Namespaces to sandbox the child process
@@ -46,12 +50,15 @@ class NodeChild {
             console.log(data.toString());
         });
         this.proc.stderr.on('data', (data) => {
-            console.log(data.toString());
+            const err = data.toString();
+            console.log(err);
+            sentry.captureException(new Error(err));
         });
 
         this.proc.on('close', (code, signal) => {
             console.log("proc died with ", signal, "status", code);
-            this.proc = undefined;
+            _child.proc = undefined;
+            _child.destroy();
         });
     }
 

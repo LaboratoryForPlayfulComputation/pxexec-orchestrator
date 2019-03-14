@@ -84,7 +84,6 @@ export function compileAll(context: pxt.PXTJson, files: { [k: string]: string })
                 res = injectExtension(importLines, value, key.split('.')[0]);
             }
 
-            console.log(res);
             const output = compile(res);
 
             results.set(key, output);

@@ -4,6 +4,8 @@ import * as logger from "morgan";
 import * as path from "path";
 import errorHandler = require("errorhandler");
 
+import * as sentry from '@sentry/node';
+
 import { compileAll } from "./compiler";
 import { PXTJson } from "./pxt";
 
@@ -28,6 +30,11 @@ export class Server {
         // Configure the application
         this.config();
         this.api();
+
+        // If Sentry is available, use it.
+        sentry.init({
+            dsn: process.env.SENTRY_DSN,
+        });
     }
 
     private api() {
@@ -38,8 +45,6 @@ export class Server {
 
             let tsFiles = Object.keys(jsonBody)
                 .filter((s) => s.endsWith(".ts") && jsonBody.hasOwnProperty(s));
-
-            console.log(tsFiles);
 
             let inputs: {[k: string]: string} = {};
             tsFiles.forEach((f) => {

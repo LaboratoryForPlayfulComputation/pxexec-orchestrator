@@ -10,6 +10,7 @@
   "author": "Will Temple",
   "license": "AGPL-3.0-or-later",
   "dependencies": {
+    "@sentry/node": "^4.6.4",
     "@types/tmp": "0.0.33",
     "body-parser": "^1.18.3",
     "cookie-parser": "^1.4.3",
