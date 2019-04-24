@@ -21,7 +21,7 @@ ${importLine('console')}`;
 
 function importExtension(ext: string): string {
     const pkg = ext.split('.')[0];
-    return `import ${pkg} from './${pkg}';`
+    return `import ${pkg}EX from './${pkg}';\n Object.setPrototypeOf(${pkg}EX, ${pkg});\n ${pkg}=${pkg}EX;`
 }
 
 function injectExtension(importLines: string, text: string, name: string): string {
