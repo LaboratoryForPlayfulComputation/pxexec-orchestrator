@@ -40,6 +40,8 @@ function injectMain(importLines: string, text: string, extensions: string[]): st
 // IMPORTS
 ${importLines}
 
+_core.hacks.nodedmx = require('${_PREFIX}/../../node_modules/dmx');
+
 // EXTENSIONS
 ` + extensions.map(importExtension).join('\n') + `
 
